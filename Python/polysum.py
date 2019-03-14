@@ -1,7 +1,5 @@
 import numpy as np
 import sympy as sp
-from fractions import Fraction
-from collections import namedtuple
 
 ONE   = sp.sympify(1)
 ZERO  = sp.sympify(0)
@@ -116,8 +114,8 @@ def polysum(expr, variable=None):
         otherwise, the variable will be DEFAULT_SYM.
     """
     if issubclass(type(expr), sp.Basic):
-        return polysum_sym(expr, x)
+        return polysum_sym(expr, variable)
     else:
-        return polysum_n(expr, DEFAULT_SYM if x == None else x)
+        return polysum_n(expr, DEFAULT_SYM if variable == None else variable)
 
 
