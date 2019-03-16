@@ -64,7 +64,7 @@ def gauss_jordan(A):
     return A
 
 
-def polysum_coefficients(n):
+def sum_coefficients(n):
     """
     obtains the coefficients C of the polynomial Q such
     that Q(x) = summation(i^n, (i, 0, x)), where C[k]
@@ -83,7 +83,7 @@ def polysum_n(n, variable=DEFAULT_SYM):
 
     assumes n is an integer, and the variable defaults to DEFAULT_SYM.
     """
-    coeffs = polysum_coefficients(n)
+    coeffs = sum_coefficients(n)
     return sum(coeffs[i-1] * variable**i for i in range(1,n+2))
 
 

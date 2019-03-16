@@ -5,7 +5,7 @@ use std::os::raw::c_double;
 use std::ptr;
 
 #[no_mangle]
-pub unsafe extern "C" fn polysum_from_exponent(n: usize, out: *mut mpq_t) {
+pub unsafe extern "C" fn polysum_sum_coefficients(n: usize, out: *mut mpq_t) {
   for i in 0..=(n as isize) {
     ptr::write(out.offset(i), Rational::from((0,1)).into_raw());
   }
@@ -16,7 +16,7 @@ pub unsafe extern "C" fn polysum_from_exponent(n: usize, out: *mut mpq_t) {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn polysum_from_exponent_double(n: usize, out: *mut c_double) {
+pub unsafe extern "C" fn polysum_sum_coefficients_double(n: usize, out: *mut c_double) {
   for i in 0..=(n as isize) {
     ptr::write(out.offset(i), 0 as c_double);
   }
@@ -27,7 +27,7 @@ pub unsafe extern "C" fn polysum_from_exponent_double(n: usize, out: *mut c_doub
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn polysum_with(n: usize, f: extern fn(usize, *mut mpq_t)) {
+pub unsafe extern "C" fn polysum_with_coefficients(n: usize, f: extern fn(usize, *mut mpq_t)) {
   let mut coeffs = vec![Rational::from((0, 1)).into_raw(); n+1];
 
   for (i, coeff) in approx::sum_coefficients(n) {
@@ -38,7 +38,7 @@ pub unsafe extern "C" fn polysum_with(n: usize, f: extern fn(usize, *mut mpq_t))
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn polysum_with_double(n: usize, f: extern fn(usize, *mut c_double)) {
+pub unsafe extern "C" fn polysum_with_coefficients_double(n: usize, f: extern fn(usize, *mut c_double)) {
   let mut coeffs = vec![0 as c_double; n+1];
 
   for (i, coeff) in approx::sum_coefficients(n) {
