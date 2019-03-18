@@ -1,0 +1,19 @@
+[package]
+name = "polysum"
+version = "0.1.0"
+authors = ["fcard"]
+edition = "2018"
+
+
+[lib]
+name = "polysum"
+path = "src/lib.rs"
+
+[[bin]]
+name = "polysum"
+path = "src/main.rs"
+
+[dependencies]
+rand = "*"
+rug = "^1.3.0"
+polynomial-macro = { path = "./macros/procedural/polynomial_macro" }
