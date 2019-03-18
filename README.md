@@ -16,7 +16,7 @@ differently, and obtains an alternative matrix.
 
 # How
 
-Given a Matrix `A` with dimensions `(n+1) x (n+2)` where each element `A[i, j]`<sup>\*</sup>
+Given a Matrix `A` with dimensions `(n+1) x (n+2)` where each element `A[i, j]`<sup>\*</sup> can have one of three values
   * if `j < i`, then `A[i, j]` is 0.
   * if `j == n+2`, then `A[i, j]` is `n!/(n - i + 1)!`.
   * otherwise, `A[i, j]` is `j!/(j - i + 1)!`.
