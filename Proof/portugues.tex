@@ -1,16 +1,12 @@
 \documentclass[a4paper, 10pt]{article}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage[brazilian]{babel}
-\usepackage{minted}
-\usemintedstyle{friendly}
 
-\title{Prova do M\'etodo PolySum para se obter Aproxima\c{c}\~oes polinomiais de somat\'orios de polin\^omios}
-
-\author{phi}
-
+\input{config.tex}
 \input{macros.tex}
 \def\lang{portugues}
+
+\usepackage[brazilian]{babel}
+
+\title{Prova do M\'etodo PolySum para se obter Aproxima\c{c}\~oes polinomiais de somat\'orios de polin\^omios}
 
 \begin{document}
 
@@ -18,7 +14,7 @@
 \maketitle
 
 \section{Teorema}
-\subsection{Hipot\'ese}
+\subsection{Hip\'otese}
 
 Seja $P(x) = x^n$, $\PSum = Q(x) = \QExpanded$ e $A$ uma matriz $(n+1) \times (n+2)$ onde, sendo $\aij$ seu elemento na linha $i$ e coluna $j$
 
@@ -120,20 +116,18 @@ Logo temos na verdade tr\^es casos, e como $i - 1 \geq j \implies i > j$, e $i -
 
 \aijDef
 
-Esta \'e exatamente a matriz base da hipot\'ese, e como ela \'e a matriz do sistema de equa\c{c}\~oes lineares cujas inc\'ognitas s\~ao os coeficientes de $Q$, ent\~ao de fato a ultima coluna da forma escalonada reduzida de $A$ nos dar\'a os valores destes coeficientes da maneira proposta pelo teorema.
+Esta \'e exatamente a matriz base da hip\'otese, e como ela \'e a matriz do sistema de equa\c{c}\~oes lineares cujas inc\'ognitas s\~ao os coeficientes de $Q$, ent\~ao de fato a ultima coluna da forma escalonada reduzida de $A$ nos dar\'a os valores destes coeficientes da maneira proposta pelo teorema.
 
 \pagebreak
 \section{Algoritmo}
 
-\subsection{Hypothesis}
+\subsection{Hip\'otese}
 O seguinte algoritmo nos dar\'a a matriz base do m\'etodo:
-\hrule
-\inputminted[linenos]{code/\lang.py:AlgLexer -x}{code/\lang.alg}
-\hrule
+\algorithm
 
 \subsection{Demonstra\c{c}\~ao}
 
-Na primeira linha da matriz, a coluna ser\'a sempre maior ou igual \`a linha, logo 
+Na primeira linha da matriz, a coluna ser\'a sempre maior ou igual \`a linha, logo
 $a_{1,j} = (j)_{1-1} = (j)_0$ para $1 \leq j \leq n+1$, e $a_{1,j} = (n)_{1-1} = (n)_0$
 para $j = n+2$. Como para todo $k$, $(k)_0 = \frac{k!}{(k - 0 )!} = \frac{k!}{k!} = 1$,
 ent\~ao todos os elementos na primeira linha s\~ao 1, e logo a primeira linha de $A$ est\'a
@@ -141,7 +135,7 @@ correta logo ap\'os a linha 3.
 
 Agora para todo $i$ nas linhas de 6 at\'e 11, notamos que elas apenas modificam a linha $i$
 de $A$, e como a primeira linha est\'a correta, podemos utilizar ``a linha anterior est\'a correta''
-como nossa hipot\'ese que ser\'a provada se demonstrarmos que a $i$-\'esima linha tamb\'em
+como nossa hip\'otese que ser\'a provada se demonstrarmos que a $i$-\'esima linha tamb\'em
 est\'a correta.
 
 Nas linhas 7 at\'e 10 apenas as colunas de $i$ at\'e $n + 2$ s\~ao modificadas, ent\~ao para

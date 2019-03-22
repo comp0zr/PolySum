@@ -210,6 +210,13 @@ a_{i,j}
 \end{align*}
 }
 
+\newcommand{\algorithm}{%
+\begin{mdframed}[style=mdfCodeStyle]%
+  \inputminted[linenos]{code/lexer_\lang.py:AlgLexer -x}{code/\lang.alg}
+\end{mdframed}
+}
+
+
 \newcommand{\algorithmIthRow}{%
 \begin{align*}
     a_{i,j} &= (j)_{i-2} \cdot (j - i + 2)\\[1em]

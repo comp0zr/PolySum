@@ -1,16 +1,10 @@
 \documentclass[a4paper, 10pt]{article}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage[english]{babel}
-\usepackage{minted}
-\usemintedstyle{friendly}
 
-\title{Proof of the PolySum method to obtain a Polynomial Approximation of a Summation over a Polynomial}
-
-\author{phi}
-
+\input{config.tex}
 \input{macros.tex}
 \def\lang{english}
+
+\title{Proof of the PolySum method to obtain a Polynomial Approximation of a Summation over a Polynomial}
 
 \begin{document}
 
@@ -127,9 +121,7 @@ This is exactly the same matrix as the base matrix from our hypothesis, and sinc
 
 \subsection{Hypothesis}
 The following algorithm will give us the method's base matrix:\\
-\hrule
-\inputminted[linenos]{code/\lang.py:AlgLexer -x}{code/\lang.alg}
-\hrule
+\algorithm
 
 \subsection{Proof}
 
