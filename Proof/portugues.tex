@@ -1,0 +1,168 @@
+\documentclass[a4paper, 10pt]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[brazilian]{babel}
+\usepackage{minted}
+\usemintedstyle{friendly}
+
+\title{Prova do M\'etodo PolySum para se obter Aproxima\c{c}\~oes polinomiais de somat\'orios de polin\^omios}
+
+\author{phi}
+
+\input{macros.tex}
+\def\lang{portugues}
+
+\begin{document}
+
+\allowdisplaybreaks
+\maketitle
+
+\section{Teorema}
+\subsection{Hipot\'ese}
+
+Seja $P(x) = x^n$, $\PSum = Q(x) = \QExpanded$ e $A$ uma matriz $(n+1) \times (n+2)$ onde, sendo $\aij$ seu elemento na linha $i$ e coluna $j$
+
+\aijDef
+
+Ent\~ao se $B$ for a forma escalonada reduzida de $A$, onde $\bij$ \'e o elemento de $B$ na linha $i$ e coluna $j$, ent\~ao $c_i = b_{i,n+2}$.\\
+
+Em outras palavras: Se contruir-mos a matriz (que podemos chamar de matriz base)
+
+\AMatrix
+
+Ent\~ao se aplicar-mos uma elimina\c{c}\~ao de Gauss-Jordan sobre esta matriz, ent\~ao o valor na ultima coluna da $i$-\'esima linha da matriz resultante ser\'a o coeficiente que multiplica o termo $x^i$ em Q(x).
+
+\subsection{Lemas}
+\subsubsection{Lema 1}
+
+Para todos $n \geq 0$ e $m \geq 0$ onde $n$ e $m$ s\~ao n\'umeros naturais, e para todo $c$ independente de $x$, ent\~ao
+\lemmaOne
+
+\paragraph{Caso 1, $m < n$}
+
+Provamos por indu\c{c}\~ao em $m$.
+
+\subparagraph{Caso Base: $m = 0$}
+
+\lemmaOneCaseOneBase
+
+\subparagraph{Passo Indutivo: $m = k > 0$}
+
+\lemmaOneCaseOneInduction
+\paragraph{Caso 2: $m = n$}
+
+\lemmaOneCaseTwo
+\paragraph{Caso 3: $m > n$}
+ 
+Provamos por indu\c{c}\~ao em $m$.
+
+\subparagraph{Caso Base: $m = n + 1$}
+
+\lemmaOneCaseThreeBase
+
+\subparagraph{Passo Indutivo: $m = k > n + 1$}
+
+\lemmaOneCaseThreeInduction
+ 
+\pagebreak
+\subsubsection{Lema 2}
+
+Se $\PSum = Q(x)$, ent\~ao $P(x) = Q(x) - Q(x-1)$.
+
+\paragraph{Demonstra\c{c}\~ao}
+
+\lemmaTwo
+
+\pagebreak
+
+\subsection{Demonstra\c{c}\~ao do Teorema}
+
+Seja $P(x) = x^n$ e $\PSum = Q(x) = \QExpanded$. Apartir do Lema 2, temos que $P(x) = Q(x) - Q(x-1)$, e podemos ent\~ao criar $n+1$ equa\c{c}\~oes tais que formemos o sistema
+
+\diffEquationSystem
+
+onde a $i$-\'esima equa\c{c}\~ao \'e
+
+\ithEquation
+
+Percebemos ent\~ao que estas s\~ao equa\c{c}\~oes lineares com incognitas $\unknowns$, onde o coeficiente de $c_j$ na equa\c{c}\~ao $i$ \'e $\jthUnknown$, ou $\jthUnknownSimp$, e o valor independente \'e $\frac{d^{i-1}}{dx^{i-1}}\Big[x^n\Big]$. Se montar-mos a matrix relacionada a este sistema ent\~ao obtemos uma matrix $A$ tal que, seja $a_{i,j}$ o seu elemento na linha $i$ e coluna $j$, se $j < n + 2$, ent\~ao $a_{i,j} = c_j$, e se $j = n+2$, $a_{i,j}$ \'e igual ao valor independente da equa\c{c}\~ao $i$.\\
+
+Usamos agora o Lema 1 para simplificar essa matriz.
+
+\pagebreak
+\subsubsection{Caso 1: $j = n + 2$}
+
+Como o maior valor poss\'ivel de $i$ \'e $n+1$, ent\~ao
+
+\caseOneComparison
+
+Logo:
+
+\caseOneResult
+
+\subsubsection{Caso 2: $i - 1 < j < n + 2$}
+
+\caseTwoPartOne
+
+Agora que eliminamos as deriva\c{c}\~oes, podemos substituir $x$ por $1$ sem perder generalidade:
+
+\caseTwoPartTwo
+
+\subsubsection{Caso 3: $i - 1 = j$}
+
+\caseThree
+
+\subsubsection{Caso 4: $i - 1 > j$}
+
+\caseFour
+
+Logo temos na verdade tr\^es casos, e como $i - 1 \geq j \implies i > j$, e $i - 1 < j \implies i \leq j$, ent\~ao:
+
+\aijDef
+
+Esta \'e exatamente a matriz base da hipot\'ese, e como ela \'e a matriz do sistema de equa\c{c}\~oes lineares cujas inc\'ognitas s\~ao os coeficientes de $Q$, ent\~ao de fato a ultima coluna da forma escalonada reduzida de $A$ nos dar\'a os valores destes coeficientes da maneira proposta pelo teorema.
+
+\pagebreak
+\section{Algoritmo}
+
+\subsection{Hypothesis}
+O seguinte algoritmo nos dar\'a a matriz base do m\'etodo:
+\hrule
+\inputminted[linenos]{code/\lang.py:AlgLexer -x}{code/\lang.alg}
+\hrule
+
+\subsection{Demonstra\c{c}\~ao}
+
+Na primeira linha da matriz, a coluna ser\'a sempre maior ou igual \`a linha, logo 
+$a_{1,j} = (j)_{1-1} = (j)_0$ para $1 \leq j \leq n+1$, e $a_{1,j} = (n)_{1-1} = (n)_0$
+para $j = n+2$. Como para todo $k$, $(k)_0 = \frac{k!}{(k - 0 )!} = \frac{k!}{k!} = 1$,
+ent\~ao todos os elementos na primeira linha s\~ao 1, e logo a primeira linha de $A$ est\'a
+correta logo ap\'os a linha 3.
+
+Agora para todo $i$ nas linhas de 6 at\'e 11, notamos que elas apenas modificam a linha $i$
+de $A$, e como a primeira linha est\'a correta, podemos utilizar ``a linha anterior est\'a correta''
+como nossa hipot\'ese que ser\'a provada se demonstrarmos que a $i$-\'esima linha tamb\'em
+est\'a correta.
+
+Nas linhas 7 at\'e 10 apenas as colunas de $i$ at\'e $n + 2$ s\~ao modificadas, ent\~ao para
+$j < i$, $a_{i,j} = 0$, o que \'e correto.
+
+Se $i \leq j < n + 2$, $a_{i,j} = a_{i-1, j} \cdot (j - i + 2)$. Como n\'os sabemos que que
+todos os elementos na linha anterior est\~ao corretos, e como $i \leq j \implies i - 1 < j$,
+$a_{i-1, j} = (j)_{i-2}$ e
+
+\algorithmIthRow
+
+O que \'e correto. A linha 10 do programa ser\'a correta se $a_{i,n+2} = a_{i,n}$, e como
+$a_{i,n} = (n)_{i-1}$ para todo $i < n+1$, e $a_{i,n+2} = (n)_{n-1}$ para todo $i \leq n+1$,
+ent\~ao isto \'e verdade para todas exceto a ultima linha. Como nenhuma outra linha depende
+da ultima linha estar correta, n\~ao h\'a problema em deixa-la incorreta se a corrigirmos
+mais tarde, o que ser\'a feito na linha 12 do programa. A linha 12 do programa \'e correta
+pois
+\algorithmLast
+
+Assim a ultima linha da matriz estar\'a correta se a linha anterior o for, e esta estar\'a
+correta se a linha anterior a ela o for, e assim por diante at\'e a linha 1, que j\'a provamos
+estar correta. Logo, a matriz resultante $A$ est\'a completamente correta.
+
+\end{document}

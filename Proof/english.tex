@@ -1,0 +1,164 @@
+\documentclass[a4paper, 10pt]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[english]{babel}
+\usepackage{minted}
+\usemintedstyle{friendly}
+
+\title{Proof of the PolySum method to obtain a Polynomial Approximation of a Summation over a Polynomial}
+
+\author{phi}
+
+\input{macros.tex}
+\def\lang{english}
+
+\begin{document}
+
+\allowdisplaybreaks
+\maketitle
+
+\section{Theorem}
+\subsection{Hypothesis}
+
+Let $P(x) = x^n$, $\PSum = Q(x) = \QExpanded$ and $A$ a $(n+1) \times (n+2)$ matrix where, with $\aij$ being its element in the $i-th$ row and $j-th$ column
+
+\aijDef
+
+Then if $B$ is the reduced row echelon form of $A$, where $\bij$ is the element in $B$ in the $i-th$ row  and $j-th$ column, then $c_i = b_{i,n+2}$.\\
+
+In other words, if we build the matrix (which we can call the base matrix)
+
+\AMatrix
+
+Then if we apply a Gauss-Jordan elimination over it, the value of the last column in the $i-th$ row of the resulting matrix will be the coefficient that multiplies the term $x^i$ in $Q(x)$.
+
+\subsection{Lemmas}
+\subsubsection{Lemma 1}
+
+For all $n \geq 0$ and $m \geq 0$ where $n$ and $m$ are natural numbers, and for all $c$ that is independent from $x$, then
+\lemmaOne
+
+\paragraph{Case 1, $m < n$}
+
+We prove by induction in $m$.
+
+\subparagraph{Base Case: $m = 0$}
+
+\lemmaOneCaseOneBase
+
+\subparagraph{Inductive Step: $m = k > 0$}
+
+\lemmaOneCaseOneInduction
+\paragraph{Case 2: $m = n$}
+
+\lemmaOneCaseTwo
+\paragraph{Case 3: $m > n$}
+ 
+We prove by induction in $m$.
+
+\subparagraph{Base Case: $m = n + 1$}
+
+\lemmaOneCaseThreeBase
+
+\subparagraph{Inductive Step: $m = k > n + 1$}
+
+\lemmaOneCaseThreeInduction
+ 
+\pagebreak
+\subsubsection{Lemma 2}
+
+If $\PSum = Q(x)$, then $P(x) = Q(x) - Q(x-1)$.
+
+\paragraph{Proof}
+
+\lemmaTwo
+
+\pagebreak
+
+\subsection{Proof of the Theorem}
+
+Let $P(x) = x^n$ and $\PSum = Q(x) = \QExpanded$. From Lemma 2, we have that $P(x) = Q(x) - Q(x-1)$, and we can then create $n+1$ equations such that we build the system
+
+\diffEquationSystem
+
+where the $i-th$ equation is
+
+\ithEquation
+
+We notice that these are linear equation with unknowns $\unknowns$, where $c_j$'s coefficient is $\jthUnknown$, or $\jthUnknownSimp$, and the independent value is $\independentValue$. If we build the matrix related to this system we obtain a matrix $A$ such that, let $a_{i,j}$ be its element in the $i-th$ row and $j-th$ column, if $j < n + 2$, then $a_{i,j} = c_j$, and if $j = n+2$, $a_{i,j}$ is equal to the independent value in the equation $i$.\\
+
+Now we use Lemma 1 to simplify this matrix.
+
+\pagebreak
+\subsubsection{Case 1: $j = n + 2$}
+
+Since the largest possible value of $i$ is $n+1$, then
+
+\caseOneComparison
+
+Therefore:
+
+\caseOneResult
+
+\subsubsection{Case 2: $i - 1 < j < n + 2$}
+
+\caseTwoPartOne
+
+Now that we removed the differentiation, we can replace $x$ by $1$ without losing generality:
+
+\caseTwoPartTwo
+
+\subsubsection{Case 3: $i - 1 = j$}
+
+\caseThree
+
+\subsubsection{Case 4: $i - 1 > j$}
+
+\caseFour
+
+Therefore we actually have three cases, e since $i - 1 \geq j \implies i > j$, and $i - 1 < j \implies i \leq j$, then:
+
+\aijDef
+
+This is exactly the same matrix as the base matrix from our hypothesis, and since this is the matrix of the linear system whose unknowns are the coefficients of $Q$, then the last column of the reduced row echelon form of $A$ will in fact give us these coefficients as proposed by the theorem.
+
+\pagebreak
+\section{Algorithm}
+
+\subsection{Hypothesis}
+The following algorithm will give us the method's base matrix:\\
+\hrule
+\inputminted[linenos]{code/\lang.py:AlgLexer -x}{code/\lang.alg}
+\hrule
+
+\subsection{Proof}
+
+In the first row of the matrix, the column will always be greater or equal to the row, therefore
+$a_{1,j} = (j)_{1-1} = (j)_0$ for $1 \leq j \leq n+1$, and $a_{1,j} = (n)_{1-1} = (n)_0$ for $j = n+2$.
+Since for all $k$, $(k)_0 = \frac{k!}{(k - 0 )!} = \frac{k!}{k!} = 1$, then all elements in row one
+will be 1, and therefore the first row of $A$ is correct just after line 3.
+
+Now for every $i$ in the lines 6 to 11, we notice that they only change the row $i$, and since
+the first row is correct, we can use "the previous row is correct" as our hypothesis that will
+be proven if we prove that the $i$-th row is correct as well.
+
+In the lines 7 to 10 only the columns $i$ to $n + 2$ are modified, so for $j < i$, $a_{i,j} = 0$,
+which is correct.
+
+If $i \leq j < n + 2$, $a_{i,j} = a_{i-1, j} \cdot (j - i + 2)$. Since we know that all
+elements in the previous row are correct, and since $i \leq j \implies i - 1 < j$,
+$a_{i-1, j} = (j)_{i-2}$ then
+
+\algorithmIthRow
+
+Which is correct. Line 10 will be correct if $a_{i,n+2} = a_{i,n}$, and since $a_{i,n} = (n)_{i-1}$
+for all $i < n+1$, and $a_{i,n+2} = (n)_{i-1}$ for all $i \leq n+1$, then that's true for all
+but the last row.  Since no other row depends on the last row being correct, it's fine if it is
+incorrect as long as we correct it later, which will be done in line 12. Line 12 itself is
+correct because
+\algorithmLast
+
+So the last row will be correct as long as the previous row is, which will be correct as long as its previous row is, and so on until row 1, which we proved to be correct already. Therefore, the resulting
+matrix A is wholly correct.
+
+\end{document}

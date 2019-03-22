@@ -1,0 +1,236 @@
+\newcommand{\PSum}{\sum_{i=1}^{x}P(i)}
+
+\newcommand{\QExpanded}{c_1x + c_2x^2 + \cdots + c_{n+1}x^n+1}
+
+\newcommand{\aij}{a_{i,j}}
+\newcommand{\bij}{b_{i,j}}
+
+
+
+\newcommand{\aijDef}{%
+\begin{align*}
+  a_{i,j} = \begin{cases}
+    (n)_{i-1} & \text{se $j = n + 2$}\\
+    (j)_{i-1} & \text{se $i \leq j < n + 2$}\\
+    0 & \text{se $i > j$}
+  \end{cases}
+\end{align*}
+}
+
+\newcommand{\AMatrix}{%
+$$
+\left(
+\begin{array}{ccccccc}
+     (1)_0 & (2)_0  & (3)_0  & \cdots & (n)_0     & (n+1)_0     & (n)_0     \\
+       0   & (2)_1  & (3)_1  & \cdots & (n)_1     & (n+1)_1     & (n)_1     \\
+       0   &   0    & (3)_2  & \cdots & (n)_2     & (n+1)_2     & (n)_2     \\
+    \vdots & \vdots & \vdots & \ddots & \vdots    & \vdots      & \vdots    \\
+       0   &   0    &   0    & \cdots & (n)_{n-1} & (n+1)_{n-1} & (n)_{n-1} \\
+       0   &   0    &   0    & \cdots & 0         & (n+1)_n     & (n)_n     \\
+\end{array}
+\right)
+$$
+}
+
+\newcommand{\lemmaOne}{%
+\begin{align*}
+  \frac{d^m}{dx^m}\Big[(x + c)^n\Big] = \begin{cases}
+    (n)_m (x + c)^{n - m} & \text{se $m < n$} \\
+    (n)_m & \text{se $m = n$} \\
+    0 & \text{se $m > n$}
+  \end{cases}
+\end{align*}
+}
+
+\newcommand{\lemmaOneCaseOneBase}{%
+\begin{align*}
+  \frac{d^m}{dx^m}\Big[(x + c)^n\Big]
+  &= \frac{d^0}{dx^0}\Big[(x + c)^n\Big] \\[1em]
+  &= (x + c)^n \\[1em]
+  &= 1 \cdot (x + c)^{n - 0} \\[1em]
+  &= \frac{n!}{n!} \cdot (x + c)^{n - 0} \\[1em]
+  &= \frac{n!}{(n - 0)!} \cdot (x + c)^{n - 0} \\[1em]
+  &= (n)_0 (x + c)^{n - 0} \\[1em]
+  &= (n)_m (x + c)^{n - m}
+\end{align*}
+}
+
+\newcommand{\lemmaOneCaseOneInduction}{%
+\begin{align*}
+  \frac{d^m}{dx^m}\Big[(x + c)^n\Big]
+  &= \frac{d^k}{dx^K}\Big[(x + c)^n\Big] \\[1em]
+  &= \frac{d}{dx}\bigg[\frac{d^{k-1}}{dx^{k-1}}\Big[(x + c)\Big]\bigg] \\[1em]
+  &= \frac{d}{dx}\Big[(n)_{k-1}(x + c)^{n - (k - 1)}\Big] \\[1em]
+  &= (n)_{k-1}\frac{d}{dx}\Big[(x + c)^{n - (k - 1)}\Big] \\[1em]
+  &= (n)_{k-1}\cdot (n - (k - 1)) \cdot (x + c)^{n - (k - 1) - 1} \\[1em]
+  &= \frac{n!}{(n - (k - 1))!}\cdot (n - (k - 1)) \cdot (x + c)^{n - k + 1 - 1} \\[1em]
+  &= \frac{n! \cdot (n - (k - 1))}{(n - (k - 1) - 1)! \cdot (n - (k - 1))} \cdot (x + c)^{n - k} \\[1em]
+  &= \frac{n!}{(n - (k - 1) - 1)!} \cdot (x + c)^{n - k} \\[1em]
+  &= \frac{n!}{(n - k + 1 - 1)!} \cdot (x + c)^{n - k} \\[1em]
+  &= \frac{n!}{(n - k)!} \cdot (x + c)^{n - k} \\[1em]
+  &= (n)_{k}(x + c)^{n - k} \\[1em]
+  &= (n)_{m}(x + c)^{n - k}
+\end{align*}
+}
+
+\newcommand{\lemmaOneCaseTwo}{%
+\begin{align*}
+  \frac{d^m}{dx^m}\Big[(x + c)^n\Big]
+  &= \frac{d}{dx}\bigg[\frac{d^{m-1}}{dx^{m-1}}\Big[(x + c)^n\Big]\bigg] \\[1em]
+  &= \frac{d}{dx}\bigg[\frac{d^{m-1}}{dx^{m-1}}\Big[(x + c)^n\Big]\bigg] \\[1em]
+  &= \frac{d}{dx}\Big[(n)_{m-1}(x + c)^{n - (m - 1)}\Big] \\[1em]
+  &= (n)_{m-1}\frac{d}{dx}\Big[(x + c)^{n - m + 1}\Big] \\[1em]
+  &= (n)_{n-1}\frac{d}{dx}\Big[(x + c)^{n - n + 1}\Big] \\[1em]
+  &= \frac{n!}{(n - (n - 1))!}\frac{d}{dx}\Big[(x + c)^{1}\Big] \\[1em]
+  &= \frac{n!}{(n - n + 1)!}\frac{d}{dx}\Big[(x + c)^{1}\Big]  \\[1em]
+  &= \frac{n!}{1!}\cdot\frac{d}{dx}\Big[x + c\Big] \\[1em]
+  &= \frac{n!}{0!}\bigg(\frac{d}{dx}\Big[x\Big] + \frac{d}{dx}\Big[c\Big]\bigg) \\[1em]
+  &= \frac{n!}{(n - n)!}(1 + 0) \\[1em]
+  &= (n)_n \\[1em]
+  &= (n)_m 
+\end{align*}
+}
+
+\newcommand{\lemmaOneCaseThreeBase}{%
+\begin{align*}
+  \frac{d^m}{dx^m}\Big[(x + c)^n\Big]
+  &= \frac{d}{dx}\bigg[\frac{d^{m-1}}{dx^{m-1}}\Big[(x + c)^n\Big]\bigg] \\[1em]
+  &= \frac{d}{dx}\bigg[\frac{d^{n+1-1}}{dx^{n+1-1}}\Big[(x + c)^n\Big]\bigg] \\[1em]
+  &= \frac{d}{dx}\bigg[\frac{d^n}{dx^n}\Big[(x + c)^n\Big]\bigg] \\[1em]
+  &= \frac{d}{dx}\Big[(n)_n\Big]\\[1em]
+  &= 0
+\end{align*}
+}
+
+\newcommand{\lemmaOneCaseThreeInduction}{%
+\begin{align*}
+  \frac{d^m}{dx^m}\Big[(x + c)^n\Big]
+  &= \frac{d^k}{dx^k}\Big[(x + c)^n\Big] \\[1em]
+  &= \frac{d}{dx}\bigg[\frac{d^{k-1}}{dx^{k-1}}\Big[(x + c)^n\Big]\bigg] \\[1em]
+  &= \frac{d}{dx}\Big[0\Big] \\[1em]
+  &= 0
+\end{align*}
+}
+
+\newcommand{\lemmaTwo}{%
+\begin{align*}
+  \sum_{i=1}^{x}P(i) &= Q(x) \\[1em]
+  \sum_{i=1}^{x}P(i) - Q(x-1) &= Q(x) - Q(x-1)\\[1em]
+  \sum_{i=1}^{x}P(i) - \sum_{i=1}^{x-1}P(i) &= Q(x) - Q(x-1)\\[1em]
+  (P(x) + P(x-1) + \cdots + P(1)) - (P(x-1) + \cdots + P(1)) &= Q(x) - Q(x-1)\\[1em]
+  P(x) + (P(x-1) + \cdots + P(1)) - (P(x-1) + \cdots + P(1)) &= Q(x) - Q(x-1)\\[1em]
+  P(x) &= Q(x) - Q(x-1)
+\end{align*}
+}
+
+\newcommand{\diffEquationSystem}{%
+\begin{align*}
+  \frac{d^0}{dx^0}\Big[Q(x) - Q(x-1)\Big] &= \frac{d^0}{dx^0}\Big[P(x)\Big] \\[1em]
+  \frac{d^1}{dx^1}\Big[Q(x) - Q(x-1)\Big] &= \frac{d^1}{dx^1}\Big[P(x)\Big] \\[1em]
+  \vdots \\[1em]
+  \frac{d^n}{dx^n}\Big[Q(x) - Q(x-1)\Big] &= \frac{d^n}{dx^n}\Big[P(x)\Big] \\[1em]
+\end{align*}
+}
+
+\newcommand{\ithEquation}{%
+\begin{align*}
+   \frac{d^{i-1}}{dx^{i-1}}\Big[Q(x) - Q(x-1)\Big] &= \frac{d^{i-1}}{dx^{i-1}}\Big[P(x)\Big] &\implies \\[1em]
+  \frac{d^{i-1}}{dx^{i-1}}\Big[(c_1x + \cdots + c_{n+1}x^{n+1}) - (c_1(x - 1) + \cdots + c_{n+1}(x - 1)^{n+1})\Big] &= \frac{d^{i-1}}{dx^{i-1}}\Big[x^n\Big] &\implies \\[1em]
+  \frac{d^{i-1}}{dx^{i-1}}\Big[c_1(x - (x - 1)) + \cdots + c_{n+1}(x^{n+1} - (x - 1)^{n+1})\Big] &= \frac{d^{i-1}}{dx^{i-1}}\Big[x^n\Big] &\implies \\[1em]
+  c_1\cdot\frac{d^{i-1}}{dx^{i-1}}\Big[x - (x - 1)\Big] + \cdots + c_{n+1}\cdot\frac{d^{i-1}}{dx^{i-1}}\Big[x^{n+1} - (x - 1)^{n+1}\Big] &= \frac{d^{i-1}}{dx^{i-1}}\Big[x^n\Big] &\implies \\[1em]
+\end{align*}
+}
+
+\newcommand{\unknowns}{c_1,\ldots,c_{n+1}}
+
+\newcommand{\jthUnknown}{%
+\frac{d^{i-1}}{dx^{i-1}}\Big[x^j - (x - 1)^j\Big]%
+}
+
+\newcommand{\jthUnknownSimp}{%
+\bigg(\frac{d^{i-1}}{dx^{i-1}}\Big[x^j\Big] - \frac{d^{i-1}}{dx^{i-1}}\Big[(x - 1)^j\Big]\bigg)%
+}
+
+\newcommand{\independentValue}{%
+\frac{d^{i-1}}{dx^{i-1}}\Big[x^n\Big]%
+}
+
+\newcommand{\caseOneComparison}{%
+\begin{align*}
+    j &= n + 2 &\implies\\
+    j &> i &\implies\\
+    j &> i - 1 &\implies\\
+    i - 1 &< j 
+\end{align*}
+}
+
+\newcommand{\caseOneResult}{%
+\begin{align*}
+a_{i,j}
+&= \frac{d^{i-1}}{dx^{i-1}}\Big[x^n\Big] \\[1em]
+&= (n)_{i-1} \\[1em]
+\end{align*}
+}
+
+\newcommand{\caseTwoPartOne}{%
+\begin{align*}
+a_{i,j}
+&= \frac{d^{i-1}}{dx^{i-1}}\Big[x^j\Big] - \frac{d^{i-1}}{dx^{i-1}}\Big[(x - 1)^j\Big] \\[1em]
+&= (j)_{i-1}x^{j - (i - 1)} - (j)_{i-1}(x - 1)^{j - (i - 1)} \\[1em]
+&= (j)_{i-1}\Big(x^{j - (i - 1)} - (x - 1)^{j - (i - 1)}\Big)\\[1em]
+\end{align*}
+}
+
+\newcommand{\caseTwoPartTwo}{%
+\begin{align*}
+a_{i,j}
+&= (j)_{i-1}\Big(x^{j - (i - 1)} - (x - 1)^{j - (i - 1)}\Big)\\[1em]
+&= (j)_{i-1}\Big(1^{j - (i - 1)} - (1 - 1)^{j - (i - 1)}\Big)\\[1em]
+&= (j)_{i-1}\Big(1^{j - (i - 1)} - 0^{j - (i - 1)}\Big)\\[1em]
+&= (j)_{i-1}\Big(1 - 0\Big)\\[1em]
+&= (j)_{i-1}\\[1em]
+\end{align*}
+}
+
+\newcommand{\caseThree}{%
+\begin{align*}
+a_{i,j}
+&= \frac{d^{i-1}}{dx^{i-1}}\Big[x^j\Big] - \frac{d^{i-1}}{dx^{i-1}}\Big[(x - 1)^j\Big] \\[1em]
+&= (j)_{i-1} - (j)_{i-1} \\[1em]
+&= 0\\[1em]
+\end{align*}
+}
+
+\newcommand{\caseFour}{%
+\begin{align*}
+a_{i,j}
+&= \frac{d^{i-1}}{dx^{i-1}}\Big[x^j\Big] - \frac{d^{i-1}}{dx^{i-1}}\Big[(x - 1)^j\Big] \\[1em]
+&= 0 - 0 \\[1em]
+&= 0\\[1em]
+\end{align*}
+}
+
+\newcommand{\algorithmIthRow}{%
+\begin{align*}
+    a_{i,j} &= (j)_{i-2} \cdot (j - i + 2)\\[1em]
+    a_{i,j} &= \frac{j!}{(j - (i-2))!} \cdot (j - i + 2)\\[1em]
+    a_{i,j} &= \frac{j!\cdot (j - i + 2)}{(j - i + 2)!}\\[1em]
+    a_{i,j} &= \frac{j!\cdot (j - i + 2)}{(j - i + 1)! \cdot (j - i + 2)}\\[1em]
+    a_{i,j} &= \frac{j!}{(j - i + 1)!}\\[1em]
+    a_{i,j} &= \frac{j!}{(j - (i - 1))!}\\[1em]
+    a_{i,j} &= (j)_{i-1}
+\end{align*}
+}
+
+\newcommand{\algorithmLast}{%
+\begin{align*}
+a_{n+1, n+2}
+&= (n)_{n} \\[1em]
+&= \frac{n!}{(n - n)!} \\[1em]
+&= \frac{n!}{0!} \\[1em]
+&= \frac{n!}{1!} \\[1em]
+&= \frac{n!}{(n - (n - 1))!} \\[1em]
+&= (n)_{n-1} \\[1em]
+&= a_{n, n+2}
+\end{align*}
+}

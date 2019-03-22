@@ -1,0 +1,5 @@
+*.aux
+*.log
+*.aex
+*.synctex.gz
+_minted-*
