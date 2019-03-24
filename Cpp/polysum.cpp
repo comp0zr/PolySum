@@ -1,10 +1,11 @@
+#include "polysum.h"
 #include <iostream>
-#include <vector>
-#include <gmpxx.h>
+#include <sstream>
 
 namespace polysum {
   typedef std::vector<mpq_class> mpq_row;
-  typedef std::vector<mpq_row> mpq_matrix;
+  typedef std::vector<mpq_class> mpq_column;
+  typedef std::vector<mpq_row>   mpq_matrix;
 
   mpq_matrix make_matrix(size_t n) {
     mpq_matrix A(n+1, mpq_row(n+2, 0));
@@ -23,38 +24,75 @@ namespace polysum {
 
   void reduced_row_echelon(mpq_matrix& A) {
     size_t n = A.size() - 1;
-    for (size_t i = n; i > 0; i--) {
+    for (size_t i = n; i+1 > 0; i--) {
       A[i][n+1] /= A[i][i];
-      A[i][i] = 0;
-      for (size_t j = i-1; j > 0; j--) {
+      A[i][i] = 1;
+      for (size_t j = i-1; j+1 > 0; j--) {
         auto p = A[j][i];
         A[j][i] = 0;
         A[j][n+1] -= A[i][n+1] * p;
       }
     }
   }
+
+  mpq_column sum_coefficients(size_t n) {
+    auto A = make_matrix(n);
+    reduced_row_echelon(A);
+
+    mpq_column result;
+    for (auto row: A) {
+      result.push_back(row[n+1]);
+    }
+    return result;
+  }
+
+  Polynomial polysum(Polynomial& p) {
+    std::string v = p.variable_name();
+
+    Polynomial result(v);
+    for (size_t i = 0; i < p.degree(); i++) {
+      auto r = polysum(v, i+1);
+      result += polysum(v, i+1) * p.coefficient(i);
+    }
+    return result;
+  }
+
+  Polynomial polysum(std::string variable_name, size_t n) {
+    return Polynomial(variable_name, sum_coefficients(n));
+  }
+
+  Polynomial polysum(size_t n) {
+    return polysum("x", n);
+  }
 }
 
-void print_term(mpq_class& coeff, size_t i) {
-  if (i != 0) std::cout << " + ";
-  std::cout << coeff << "x";
-  if (i != 0) std::cout << "^" << i+1;
+void read_and_print_polysum(std::istream& strm, std::string arg) {
+  polysum::Polynomial p("");
+  strm >> p;
+  auto ps = polysum::polysum(p);
+
+  std::cout << "base polynomial: "  << p  << "\n";
+  std::cout << "resulting polynomial: " << ps << "\n";
+
+  if (arg != "") {
+    std::stringstream args(arg);
+    mpz_class z;
+    args >> z;
+    std::cout << "result: " << ps(z) << "\n";
+  }
 }
 
 int main(int argc, char* argv[]) {
-  size_t n;
   if (argc == 2) {
-    n = std::stoll(argv[1]);
+    std::stringstream s(argv[1]);
+    read_and_print_polysum(s, "");
+
+  } else if (argc == 3) {
+    std::stringstream s(argv[1]);
+    read_and_print_polysum(s, argv[2]);
+
   } else {
-    std::cin >> n;
+    read_and_print_polysum(std::cin, "");
   }
-
-  auto A = polysum::make_matrix(n);
-  polysum::reduced_row_echelon(A);
-
-  for (size_t i = 0; i <= n; i++) {
-    print_term(A[i][n+1], i);
-  }
-  std::cout << "\n";
   return 0;
 }

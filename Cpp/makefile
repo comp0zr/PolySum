@@ -1,7 +1,7 @@
 CXX = g++
-OBJS	= polysum.o
-SOURCE	= polysum.cpp
-HEADER	= 
+OBJS	= polysum.o polynomial.o
+SOURCE	= polysum.cpp polynomial.cpp
+HEADER	= polysum.h
 OUT	= polysum
 LFLAGS	 = -lgmpxx -lgmp
 
