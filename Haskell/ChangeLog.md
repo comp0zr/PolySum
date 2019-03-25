@@ -1,5 +1,10 @@
 # Revision history for polysum
 
-## 0.1.0.0  -- YYYY-mm-dd
+## 0.2.0.0  -- 2019-03-25
 
-* First version. Released on an unsuspecting world.
+* Fix the executable not being able to parse its second argument
+* Make the executable called `polysum` instead of `main`, duh.
+
+## 0.1.0.0  -- 2019-03-25
+
+* First version. Released on an unsuspecting world. (it's true!)
