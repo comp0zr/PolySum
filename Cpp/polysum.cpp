@@ -3,10 +3,6 @@
 #include <sstream>
 
 namespace polysum {
-  typedef std::vector<mpq_class> mpq_row;
-  typedef std::vector<mpq_class> mpq_column;
-  typedef std::vector<mpq_row>   mpq_matrix;
-
   mpq_matrix make_matrix(size_t n) {
     mpq_matrix A(n+1, mpq_row(n+2, 0));
     A[0] = mpq_row(n+2, 1);
@@ -51,8 +47,9 @@ namespace polysum {
 
     Polynomial result(v);
     for (size_t i = 0; i < p.degree(); i++) {
-      auto r = polysum(v, i+1);
-      result += polysum(v, i+1) * p.coefficient(i);
+      if (p.coefficient(i) != 0) {
+        result += polysum(v, i+1) * p.coefficient(i);
+      }
     }
     return result;
   }

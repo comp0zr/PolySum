@@ -1,0 +1,26 @@
+name:                polysum
+version:             0.1.0.0
+synopsis:            Finds a polynomial Q such that Q(x) = sum P(i) for i from 1 to x
+-- description:
+homepage:            https://github.com/fcard/PolySum
+license:             MIT
+license-file:        LICENSE
+author:              phi
+maintainer:          ficarde@gmail.com
+-- copyright:
+category:            Math
+build-type:          Simple
+extra-source-files:  ChangeLog.md
+cabal-version:       >=1.10
+
+library
+  exposed-modules:     PolySum
+  other-modules:       ReduceTerms, NamedPolynomial
+  build-depends:       base >=4.9 && <4.10, polynomial >=0.7 && <0.8
+  hs-source-dirs:      src
+  default-language:    Haskell2010
+
+executable main
+  hs-source-dirs: src
+  main-is:        Main.hs
+  build-depends:  base >=4.9 && <4.10, polynomial >=0.7 && <0.8, polysum

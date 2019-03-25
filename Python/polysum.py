@@ -1,9 +1,7 @@
-import numpy as np
 import sympy as sp
 
 ONE   = sp.sympify(1)
 ZERO  = sp.sympify(0)
-DTYPE = 'object'
 
 DEFAULT_SYM = sp.symbols('x')
 
@@ -18,8 +16,8 @@ def prepare_matrix(n):
     n is assumed to be an integer.
     """
     # initialize a matrix of zeros, then fill first line with ones
-    A = np.full((n+1,n+2), ZERO, DTYPE)
-    A[0] = np.full(n+2, ONE, DTYPE)
+    A = [[ZERO]*(n+2) for _ in range(0,n+1)]
+    A[0] = [ONE]*(n+2)
     # use each line to calculate the next one
     for i in range(1, n+1):
         # ignore all elements where j < i, since we know they are zero
@@ -27,23 +25,23 @@ def prepare_matrix(n):
             # this simple multiplication is all we need,
             # since A[i, j] = j!/(j - i + 1)!, and since
             # we already calculated A[i-1, j] = j!/(j - i + 2)!
-            A[i,j] = A[i-1,j] * (j - i + 2)
+            A[i][j] = A[i-1][j] * (j - i + 2)
         # the last column is the same as the antepenultimate column...
-        A[i,n+1] = A[i,n-1]
+        A[i][n+1] = A[i][n-1]
     # ...with the exception of A[n, n+1],
     # which repeats last element of the previous line.
-    A[n,n+1] = A[n-1,n+1]
+    A[n][n+1] = A[n-1][n+1]
     return A
 
 # uncommentated
 def _prepare_matrix(n):
-    A = np.full((n+1,n+2), ZERO, DTYPE)
-    A[0] = np.full(n+2, ONE, DTYPE)
+    A = [[ZERO]*(n+2) for _ in range(0,n+1)]
+    A[0] = [ONE]*(n+2)
     for i in range(1, n+1):
         for j in range(i, n+1):
-            A[i,j] = A[i-1,j] * (j - i + 2)
-        A[i,n+1] = A[i,n-1]
-    A[n,n+1] = A[n-1,n+1]
+            A[i][j] = A[i-1][j] * (j - i + 2)
+        A[i][n+1] = A[i][n-1]
+    A[n][n+1] = A[n-1][n+1]
     return A
 
 
@@ -55,12 +53,12 @@ def gauss_jordan(A):
     """
     n = len(A) - 1
     for i in range(n, -1, -1):
-        A[i,n+1] /= A[i,i]
-        A[i,i] = ONE
+        A[i][n+1] /= A[i][i]
+        A[i][i] = ONE
         for j in range(i-1, -1, -1):
-            p = A[j,i]
-            A[j,i] = ZERO
-            A[j, n+1] -= A[i, n+1] * p
+            p = A[j][i]
+            A[j][i] = ZERO
+            A[j][n+1] -= A[i][n+1] * p
     return A
 
 
@@ -73,7 +71,7 @@ def sum_coefficients(n):
     assumes n is an integer.
     """
     A = gauss_jordan(prepare_matrix(n))
-    return A[:, n+1]
+    return [A[i][n+1] for i in range(0,n+1)]
 
 
 def polysum_n(n, variable=DEFAULT_SYM):

@@ -33,9 +33,6 @@ coefficients.
 
 # Implementations
 
-There are currently three implementations, each with their
-own set of features and limitations.
-
 ## Python
 
 This implementation is meant to be simple and readable, close to
@@ -53,6 +50,18 @@ rationals.
 Intended to leverage static compilation and the mutability of the
 arbitrary precision numbers to achieve the most performance. Less
 exploratory and meant to show the algorithm in action at its peak.
+
+## C++ / Haskell
+
+Extra, for the fun of it!
+
+# Optimizations
+
+Only roughtly half the coefficients of the resulting polynomial need to be computed,
+which means half the rows and half the columns of the matrix can be ignored. The matrix
+also can sparse, which greatly reduces memory comsumption and removes the main drawback
+from this approach. Paralellization can of course be employed if the language allows it,
+although the sparse matrix optimization can make this harder.
 
 # Extensions
 
