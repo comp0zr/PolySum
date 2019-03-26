@@ -1,5 +1,9 @@
 # Revision history for polysum
 
+## 0.2.1.0  -- 2019-03-25
+
+* Documentation in the source files
+
 ## 0.2.0.0  -- 2019-03-25
 
 * Fix the executable not being able to parse its second argument
