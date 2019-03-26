@@ -110,23 +110,17 @@ variable storing the value of \(A[k, k]\) to be passed along the @diagonal@, bec
 be used to generate the matrix's diagonal. The initial value of @diagonal@ will be one of two:
 
 * if \(n\) is odd,  @diagonal@ = \(2!\) = \(2\)
-* if \(n\) is even, @diagonal@ = \(3!\) = \(6\)
+* if \(n\) is even, @diagonal@ = \(1!\) = \(1\)
 
 This is because if \(n\) is odd, we will either start our work at row 2 or not do any work at all
 (so the value doesn't matter and may as well be 2), and if n is even, we will start out work
-at row 3. And why *that* is? Well, we will be using of the fact that \((x)_0 = 1\) for all x.
-Therefore \(A[0,j] = 1\) for all j. This is only useful if n is even, otherwise we will either
-skip the first row \((n > 2)\) or we won't but already know a better representation for it.  \((n = 1)\)
-
-However, if \(n\) *is* even, then we can start the work from row 3 with the matrix starting off
-with a row of 1s.
+at row 1.
 
 So now we know all we need to make this matrix. Skip first row if \(n\) is even and greater than 2,
-but if not and \(n\) is still greater than 2, have a initial matrix with a row of 1s and start
-the work from row 3, skip every other one but make sure to include the last three, calculate
-the first diagonal and keep passing it along (remember to make up for the skipped rows!!) and
-use it to calculate the other elements of the row (again, make up for the skipped columns),
-stop after the 3th last row because the last two are constants, append them, and voila, simple simple.
+skip every other one but make sure to include the last three, calculate the first diagonal and keep
+passing it along (remember to make up for the skipped rows!!) and use it to calculate the other elements
+of the row (again, make up for the skipped columns), stop after the 3th last row because the last two are
+constants, append them, and voila, simple simple.
 
 Note that because this matrix is sparse, we will represent its rows as the a list where the \(k\)th
 element is the \(k\)th last element of the matrix. e.g. the row
@@ -149,6 +143,16 @@ where
 import Data.Ratio
 import Math.Polynomial
 import NamedPolynomial
+import Control.Parallel
+import Control.Parallel.Strategies
+import Debug.Trace
+
+-- |The map function used for rows
+-- Used to test parallelism
+mapRow :: (NFData b) => (a -> b) -> [a] -> [b]
+mapRow func list = map func list
+--mapRow func list = let nonpar = map func list
+--                   in  nonpar `using` parList rdeepseq
 
 -- |The last row of the base matrix of n
 lastRow :: Integer -> [Rational]
@@ -161,16 +165,23 @@ secondLastRow n = [1%2, 0, 1]
 -- |Which row we will start building the matrix at
 firstRow :: Int -> Integer
 firstRow 1 = 2 -- No work to be done
-firstRow n = if odd n then 2 else 3
+firstRow n = if odd n then 2 else 1
 
--- |The initial matrix that will be built upon by @createMatrix@
-initialMatrix :: Int -> [[Rational]]
-initialMatrix n = if odd n then []
-                           else [take (n + 2) (repeat 1)]
 
 -- |The value of A[k,k] where k is (firstRow n)
 initialDiagonal :: Int -> Rational
-initialDiagonal n = if odd n then 2 else 6
+initialDiagonal n = if odd n then 2 else 1
+
+-- |Diagonal of the base matrix of n
+diagonal :: Int -> [(Integer, Rational)]
+diagonal n = diagonal' (toInteger n) (firstRow n) (initialDiagonal n) []
+
+diagonal' :: Integer -> Integer -> Rational -> [(Integer, Rational)] -> [(Integer, Rational)]
+diagonal' n i value result =
+  if i >= n + 1
+  then result
+  else diagonal' n (i + 2) value' ((i,value):result)
+       where value' = value * (((i + 1) * (i + 2)) % 1)
 
 
 -- |Will build a matrix A such that the last column of its row echelon
@@ -178,32 +189,31 @@ initialDiagonal n = if odd n then 2 else 6
 -- result R is a sparse representation of A, where @((R !! i) !! j)@
 -- will be jth last element of the ith last row of the actual matrix.
 createMatrix :: Int -> [[Rational]]
-createMatrix n = createMatrix' (toInteger n) (firstRow n) (initialDiagonal n) (initialMatrix n)
+createMatrix n = createMatrix' (toInteger n) (diagonal n)
 
-createMatrix' :: Integer -> Integer -> Rational -> [[Rational]] -> [[Rational]]
-createMatrix' n i diag matrix =
-  if i >= n + 1
-  then (lastRow n):((secondLastRow n):matrix)
-  else let row     = createRow n i (i+1) diag [diag]
-           diag'   = (diag  * (((i + 1) * (i + 2)) % 1))
-           matrix' = (row:matrix)
-       in createMatrix' n (i + 2) diag' matrix'
+createMatrix' :: Integer -> [(Integer, Rational)] -> [[Rational]]
+createMatrix' n diag = let matrix = mapRow (createRow n) diag
+                       in (lastRow n):((secondLastRow n):matrix)
 
 
-createRow :: Integer -> Integer -> Integer -> Rational -> [Rational] -> [Rational]
-createRow n i j value row =
-  if j >= n + 2
+createRow :: Integer -> (Integer, Rational) -> [Rational]
+createRow n (1, init) = take ((fromIntegral n) + 2) (repeat 1)
+createRow n (i, init) = createRow' n i i init [init]
+
+createRow' :: Integer -> Integer -> Integer -> Rational -> [Rational] -> [Rational]
+createRow' n i j value row =
+  if j >= n + 1
   then if i /= n + 1
        then let (v':(v'':rest)) = row
             in  (v'':row)
        else row
-  else let value'  = (value  * (j % (j - (i - 1))))
-           value'' = (value' * ((j+1) % ((j+1) - (i - 1))))
+  else let value'  = (value  * ((j+1) % ((j+1) - (i - 1))))
+           value'' = (value' * ((j+2) % ((j+2) - (i - 1))))
            row'    = (value':row)
            row''   = (value'':row)
        in if j >= n - 1
-          then createRow n i (j + 1) value'  row'
-          else createRow n i (j + 2) value'' row''
+          then createRow' n i (j + 1) value'  row'
+          else createRow' n i (j + 2) value'' row''
 
 
 -- |The last column of the reduced row echelon form
@@ -216,18 +226,16 @@ independents' [(i:(p:_))] result = (i / p):result
 independents' (head:rest) result =
   let [independent, pivot] = head
       independent'         = independent / pivot
-      rest'                = subtractPivot independent' rest []
+      rest'                = mapRow (subtractPivot independent') rest
   in independents' rest' (independent':result)
 
 
 
-subtractPivot :: Rational -> [[Rational]] -> [[Rational]] -> [[Rational]]
-subtractPivot p [] result  = reverse result
-subtractPivot p (head:rest) result =
-  let (hIndependent:(hPrev:(hPivot:hRest))) = head
-      hIndependent' = hIndependent - (p * hPrev)
-      head'         = (hIndependent':(hPivot:hRest))
-  in subtractPivot p rest (head':result)
+subtractPivot :: Rational -> [Rational] -> [Rational]
+subtractPivot p row =
+  (independent':(pivot:rest))
+  where (independent:(prev:(pivot:rest))) = row
+        independent' = independent - (p * prev)
 
 
 -- |Let \(Q\) be a polynomial such that \(Q(x) = \sum_{i=1}^{x} i^n\)
