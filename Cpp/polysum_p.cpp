@@ -1,7 +1,4 @@
 #include "polysum.h"
-#include "equation_iterator.h"
-#include "linear_system.h"
-#include "polynomial.h"
 #include <iostream>
 #include <sstream>
 
@@ -24,7 +21,7 @@ namespace polysum {
   Diagonal diagonal(size_t n) {
     if (n > 1) {
       size_t start = initial_row(n);
-      Diagonal diag{Pivot(start)};
+      Diagonal diag(1, Pivot(start));
 
       for (size_t i = start; i < n-2; i+=2) {
         diag.push_back(diag.back().next_next());
@@ -36,13 +33,27 @@ namespace polysum {
     }
   }
 
+  /*
+  LinearSystem make_system(size_t n) {
+    return make_system(n, std::execution::seq);
+  }
+  */
+
   size_t column_step(size_t current, size_t n) {
     return (current >= n - 2) ? 1 : 2;
   }
 
+   half(
+
   LinearSystem make_system(size_t n) {
     auto diag = diagonal(n);
     LinearSystem system(n/2);
+
+    /*
+    std::for_each(
+      begin(diag), end(diag),
+      [&](auto& pivot) {
+     */
 
     for (auto pivot : diag) {
       size_t row  = pivot.row;
@@ -69,19 +80,20 @@ namespace polysum {
       auto pivot = equation_base->pop_rightmost_coefficient();
       auto indep = equation_base->independent /= pivot;
 
-      for (auto equation_sub : system.to_top(index-1)) {
-        auto c = equation_sub->pop_rightmost_coefficient();
-        equation_sub->independent -= c * indep;
+      for (auto equation_up : system.to_top(index-1)) {
+        auto c = equation_up->pop_rightmost_coefficient();
+        equation_up->independent -= c * indep;
       }
     }
   }
 
-  mpq_column sum_coefficients(size_t n) {
-    auto S = make_system(n);
-    reduced_row_echelon(S);
-    mpq_column result(n + 1, 0);
+  vector<Rational> sum_coefficients(size_t n) {
+    auto system = make_system(n);
+    reduced_row_echelon(system);
 
-    for (auto equation : S) {
+    vector<Rational> result(n + 1, 0);
+
+    for (auto equation : system) {
       result[equation->row] = equation->independent;
     }
 

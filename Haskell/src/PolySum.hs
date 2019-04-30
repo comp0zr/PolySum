@@ -207,8 +207,8 @@ createRow' n i j value row =
        then let (v':(v'':rest)) = row
             in  (v'':row)
        else row
-  else let value'  = (value  * ((j+1) % ((j+1) - (i - 1))))
-           value'' = (value' * ((j+2) % ((j+2) - (i - 1))))
+  else let value'  = (value  * ((j + 1) % ((j + 1) - (i - 1))))
+           value'' = (value' * ((j + 2) % ((j + 2) - (i - 1))))
            row'    = (value':row)
            row''   = (value'':row)
        in if j >= n - 1

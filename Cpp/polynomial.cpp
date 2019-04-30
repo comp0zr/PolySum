@@ -1,5 +1,6 @@
 #include "gmp.h"
 #include "polysum.h"
+#include "polynomial.h"
 #include <cmath>
 
 namespace polysum {
@@ -27,6 +28,32 @@ namespace polysum {
   }
 
 //
+// Data
+//
+
+  size_t Polynomial::degree() const {
+    return coefficients.size();
+  }
+
+  const std::string Polynomial::variable_name() const {
+    return variable;
+  }
+
+  const mpq_class& Polynomial::coefficient(size_t i) const {
+    return coefficients[i];
+  }
+
+  void Polynomial::pad_coefficients(size_t n) {
+    if (n > degree()) {
+      coefficients.resize(n);
+    }
+  }
+
+  auto Polynomial::coeffs() {
+    return CoefficientIterator(this->coefficients);
+  }
+
+//
 // Call Operator Overloading
 //
 
@@ -36,8 +63,8 @@ namespace polysum {
     T p = x + 0;                                             \
                                                              \
     mpq_class result(0);                                     \
-    for (size_t i = 0; i < this->degree(); i++) {            \
-      result += this->coefficient(i) * p;                    \
+    for (size_t i = 0; i < degree(); i++) {                  \
+      result += coefficient(i) * p;                          \
       p *= x;                                                \
     }                                                        \
     return result;                                           \
@@ -79,14 +106,14 @@ namespace polysum {
   }
 
   Polynomial& Polynomial::operator*=(const mpq_class& q) {
-    for (size_t i = 0; i < this->degree(); i++) {
+    for (size_t i = 0; i < degree(); i++) {
       this->coefficients[i] *= q;
     }
     return *this;
   }
 
   Polynomial& Polynomial::operator/=(const mpq_class& q) {
-    for (size_t i = 0; i < this->degree(); i++) {
+    for (size_t i = 0; i < degree(); i++) {
       this->coefficients[i] /= q;
     }
     return *this;
@@ -96,10 +123,10 @@ namespace polysum {
     if (this->variable_name() == other.variable_name()) {
       this->pad_coefficients(other.degree());
 
-      auto min = std::min(this->degree(), other.degree());
+      auto min = std::min(degree(), other.degree());
 
       for (size_t i = 0; i < min; i++) {
-        this->coefficients[i] += other.coefficient(i);
+        coefficients[i] += other.coefficient(i);
       }
     }
     return *this;
